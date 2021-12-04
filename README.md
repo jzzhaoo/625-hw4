@@ -12,4 +12,6 @@
 
 ## Installation
 
-download the folder "statcalc" and install the package
+```S
+devtools::install_github("jzzhaoo/625-hw4")
+```
