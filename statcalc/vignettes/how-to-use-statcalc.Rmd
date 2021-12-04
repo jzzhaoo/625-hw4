@@ -1,0 +1,45 @@
+---
+title: "how to do linear regression"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{how to do linear regression}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(statcalc)
+```
+ 
+To use the function `dscpstat` to get descriptive statistics:
+
+```{r}
+dscpstat(c(5:100))
+```
+
+To use the function `simplm` to get one predictor linear regression:
+
+```{r}
+simplm(x<-(1:100),y<-(50:149))
+```
+
+To use the function `multplm` to get two predictor linear regression:
+
+```{r}
+mltplm(y<-(1:10),x1<-(2:11),x2<-(3:12))
+```
+
+`dscpstat` was compared to `summary` `hist` `boxplot` `stem`
+
+`simplm` `multlm` were compared to `lm`
+
+
+
+

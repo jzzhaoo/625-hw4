@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>how to do linear regression</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">how to do linear regression</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(statcalc)</span></code></pre></div>
+<p>To use the function <code>dscpstat</code> to get descriptive statistics:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">dscpstat</span>(<span class="kw">c</span>(<span class="dv">5</span><span class="op">:</span><span class="dv">100</span>))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<pre><code>#&gt; 
+#&gt;   The decimal point is 1 digit(s) to the right of the |
+#&gt; 
+#&gt;    0 | 56789
+#&gt;    1 | 0123456789
+#&gt;    2 | 0123456789
+#&gt;    3 | 0123456789
+#&gt;    4 | 0123456789
+#&gt;    5 | 0123456789
+#&gt;    6 | 0123456789
+#&gt;    7 | 0123456789
+#&gt;    8 | 0123456789
+#&gt;    9 | 0123456789
+#&gt;   10 | 0
+#&gt;     min first.quantile mean median third.quantile max  IQR
+#&gt; 25%   5          28.75 52.5   52.5          76.25 100 47.5</code></pre>
+<p>To use the function <code>simplm</code> to get one predictor linear regression:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">simplm</span>(x&lt;-(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>),y&lt;-(<span class="dv">50</span><span class="op">:</span><span class="dv">149</span>))</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt; [1] &quot;y = 1x + 49&quot;</span></span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<pre><code>#&gt;   b0 b1 r
+#&gt; 1 49  1 1</code></pre>
+<p>To use the function <code>multplm</code> to get two predictor linear regression:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">mltplm</span>(y&lt;-(<span class="dv">50</span><span class="op">:</span><span class="dv">149</span>),x1&lt;-(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>),x2&lt;-(<span class="dv">100</span><span class="op">:</span><span class="dv">199</span>))</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt; Warning in regx22 * regx1y: NAs produced by integer overflow</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt; Warning in regx1x2 * regx2y: NAs produced by integer overflow</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt; Warning in x12sum * x22sum: NAs produced by integer overflow</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; Warning in x1x2sum * x1x2sum: NAs produced by integer overflow</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; Warning in regx12 * regx2y: NAs produced by integer overflow</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; Warning in regx1x2 * regx1y: NAs produced by integer overflow</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; Warning in x12sum * x22sum: NAs produced by integer overflow</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; Warning in x1x2sum * x1x2sum: NAs produced by integer overflow</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; [1] &quot;yhat = NA + NAx1 + NAx2&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt;   b0 b1 b2</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt; 1 NA NA NA</span></span></code></pre></div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
