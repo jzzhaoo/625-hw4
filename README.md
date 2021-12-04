@@ -1,7 +1,7 @@
 # 625-hw4
 # Statcalc
 
-✨Mastatcalc is a r package which helps with linear regression and descriptive statistics.✨
+✨statcalc is a r package which helps with linear regression and descriptive statistics.✨
 
 ## Features
             simplm - for one predictor linear regression
